@@ -1,40 +1,76 @@
 import React, { Component } from 'react';
-// importing material-ui components
+// import firebase 
+import * as firebase from 'firebase';
+// import material-ui components
 import Toggle from 'material-ui/Toggle';
 import {GridList, GridTile} from 'material-ui/GridList';
-import Divider from 'material-ui/Divider';
 
 
 
 
 class UserStateList extends Component {
 
-  states = ["New Tickets", "TLV Open", "US Open", "Chat", "Callbacks", "Break", "Sick Day", "PTO"];
+  constructor() {
+    super();
+    this.state = {
+      userName: ''
+    }
+  }
 
+  userStates = ["New Tickets", "TLV Open", "US Open", "Chat", "Callbacks", "Break", "Sick Day", "PTO"];
+  
   componentWillMount() {
+    console.log('component will mount');
+  }
+  componentDidMount() {
+    console.log('component did mount');
+  }
+  shouldComponentUpdate() {
+    this.setState({
+      userName: this.props.userName
+    })
+    return true;
+  }
+  componentWillUpdate() {
+    console.log('component did mount');
+  }
+  componentWillReceiveProps() {
+    console.log('component will receive props');
+  }
+
+  updateUserState() {
+    const userStateRef = firebase.database().ref().child('agents').child(this.props.userName);
+    console.log('update user state was called')
+    //userStateRef.push({state: 'test'})
   }
 
   render() {
 
     const statesToggle = {
-      margin: 10
+      margin: 5
+    }
+    const toggleLabel = {
+      paddingLeft: 30
     }
 
-    let setToggleStates = this.states.map(state => {
-      return <GridTile
+    let setToggleStates = this.userStates.map(state => {
+      return  <GridTile
                 cols={1}
                 style={statesToggle}
                 key={state}>
-                <Toggle value={state} label={state}/>
+                <Toggle 
+                  labelStyle={toggleLabel} 
+                  value={state} 
+                  label={state}
+                />
               </GridTile>
     })
 
     return (
-      <div>
-        <GridList cols={2} cellHeight={'auto'} >
+        <GridList cols={1} cellHeight={'auto'} >
+        <button onClick={this.updateUserState.bind(this)}>Test me</button>
           {setToggleStates}
         </GridList>
-      </div>
     );
   }
 }

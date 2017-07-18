@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import * as firebase from 'firebase';
 import './tasks.css';
 // import material-ui components
 import {Card, CardHeader, CardText} from 'material-ui/Card';
@@ -11,17 +12,40 @@ import Chip from 'material-ui/Chip';
 
 class Tasks extends Component {
 
-  tasksList = ["NEW TICKETS", "ASSIGNED TICKETS", "TLV OPEN", "US OPEN", "ASSIGNED TICKETS"];
+  constructor() {
+    super();
+    this.state = {
+      tasks: []
+    }
+  }
+
+  componentWillMount() {
+    // Create referrence to tasks node on Firebase
+    const tasksRef = firebase.database().ref().child('tasks');
+    let tempTasks = []
+    tasksRef.on('value', snap => {
+      let tl = ["assignedTickets", "newTickets", "tlvOpen", "usOpen"]
+      let tempTasks = []
+      for(let task in snap.val()) {
+        tempTasks.push({key: task, val: snap.val()[task]})
+      }
+      this.setState({
+        tasks: tempTasks
+      })
+    })
+  }
+
+  tasksList = ["NEW TICKETS", "ASSIGNED TICKETS", "TLV OPEN", "US OPEN"];
 
   render() {
 
     const appBar = {
       marginTop: 5,
-      height: 40,
-      lineHeight: 40
-    }
+      height: 40    }
     const appBarTitle = {
-      fontSize: 14
+      fontSize: 18,
+      height: 'inherit',
+      lineHeight: '40px'
     }
     const cardContainer = {
       width: "auto",
@@ -31,7 +55,7 @@ class Tasks extends Component {
     }
 
     const card = {
-      height: '35vh',
+      height: '25vh',
       width: '95%',
       margin: 5,
     }
@@ -48,26 +72,25 @@ class Tasks extends Component {
       textAlign: "center"
     }
 
+    
 
-
-    let taskItem = this.tasksList.map( task => {
-      return <GridTile key={task} cols={1}>
+    let taskItem = this.state.tasks.map(task => {
+      return <GridTile key={task.key} cols={1}>
               <Card style={card}>
-                <CardHeader title={task}/>
+                <CardHeader title={task.val.name}/>
                 <CardText style={chipContainer}>
-                  <Chip style={chip}>
-                    Agent 1
-                  </Chip>
-                  <Chip style={chip}>
-                    Agent 2
-                  </Chip>
-                  <Chip style={chip}>
-                    Agent 2
-                  </Chip>
+                  {
+                    task.val.assigned.map((agent) => {
+                      return <Chip key={agent}>{agent}</Chip>
+                    })
+                  }
                 </CardText>
               </Card>
             </GridTile>
     })
+    
+  
+    
 
     return (
       <div>

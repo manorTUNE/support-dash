@@ -21,7 +21,7 @@ class Chats extends Component {
 
     return (
       <Card style={cardContainer}>
-        <CardHeader title="CHAT SCHEDULE" />
+        <CardHeader title="CHAT SCHEDULE" className="cardHeader"/>
         <CardText>
           <Table selectable={false}>
             <TableHeader adjustForCheckbox={false} displaySelectAll={false} enableSelectAll={false}>

@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import {Card, CardActions, CardHeader, CardMedia, CardTitle, CardText} from 'material-ui/Card';
-import {GridList, GridTile} from 'material-ui/GridList';
+import {Card, CardHeader, CardText} from 'material-ui/Card';
+import {GridTile} from 'material-ui/GridList';
 
 class Callback extends Component {
   render() {
@@ -15,7 +15,7 @@ class Callback extends Component {
       <GridTile cols={1}>
       <Card style={callbackCard}>
         <CardHeader title="July 20" subtitle="John" />
-        <CardText><a href="#">go to ticket</a></CardText>
+        <CardText><a>go to ticket</a></CardText>
       </Card>
       </GridTile>
     );

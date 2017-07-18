@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import Callback from './callback';
 import './callbacks.css';
-import {Card, CardActions, CardHeader, CardMedia, CardTitle, CardText} from 'material-ui/Card';
-import {GridList, GridTile} from 'material-ui/GridList';
+import {Card, CardHeader} from 'material-ui/Card';
+import {GridList} from 'material-ui/GridList';
 
 class Callbacks extends Component {
   render() {

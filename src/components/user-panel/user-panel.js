@@ -1,12 +1,16 @@
 import React, { Component } from 'react';
-import Callbacks from '../callbacks/callbacks';
 import UserStateList from './userStateList';
 // importing material-ui components
 import {Card, CardHeader, CardText} from 'material-ui/Card';
-import {GridList, GridTile} from 'material-ui/GridList';
 import './user-panel.css';
 
 class UserPanel extends Component {
+
+  constructor() {
+    super();
+    this.state = {
+    }
+  }
 
   render() {
 
@@ -21,9 +25,10 @@ class UserPanel extends Component {
         <Card style={statesContainer}>
           <CardHeader
             title={"PROFILE"}
-            avatar="me2.jpg" />
+            subtitle={this.props.email}
+            avatar="./me.jpg" />
           <CardText>
-            <UserStateList />
+            <UserStateList userName={this.props.userName}/>
           </CardText>
         </Card>
     );
