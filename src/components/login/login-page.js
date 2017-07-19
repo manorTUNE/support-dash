@@ -80,7 +80,6 @@ class LoginPage extends Component {
       />
     ];
     const loginDialog = {
-      width: 500
     }
     const loginButton = {
       display: 'block'
@@ -103,9 +102,7 @@ class LoginPage extends Component {
 
           <TextField type="email" ref="email" hintText="Email" floatingLabelText="Email" /><br />
           <TextField type="password" ref="password" hintText="Password" floatingLabelText="Password" />
-
-          <RaisedButton label="Login" primary={true} style={loginButton}/>
-    
+              
         </Dialog>
       </div>
     );
