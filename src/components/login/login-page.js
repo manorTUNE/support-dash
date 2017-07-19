@@ -79,6 +79,12 @@ class LoginPage extends Component {
         onClick={this.signUp.bind(this)}
       />
     ];
+    const loginDialog = {
+      width: 500
+    }
+    const loginButton = {
+      display: 'block'
+    }
 
     const dialogTitleStyle = {
       textAlign: 'center',
@@ -92,10 +98,13 @@ class LoginPage extends Component {
           actions={actions}
           modal={true}
           open={this.state.open}
-          titleStyle={dialogTitleStyle}>
+          titleStyle={dialogTitleStyle}
+          style={loginDialog}>
 
           <TextField type="email" ref="email" hintText="Email" floatingLabelText="Email" /><br />
           <TextField type="password" ref="password" hintText="Password" floatingLabelText="Password" />
+
+          <RaisedButton label="Login" primary={true} style={loginButton}/>
     
         </Dialog>
       </div>

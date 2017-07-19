@@ -41,7 +41,7 @@ class UserStateList extends Component {
   updateUserState() {
     const userStateRef = firebase.database().ref().child('agents').child(this.props.userName);
     console.log('update user state was called')
-    //userStateRef.push({state: 'test'})
+    userStateRef.push({state: 'test'})
   }
 
   render() {
