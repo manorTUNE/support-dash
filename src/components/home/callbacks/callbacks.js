@@ -8,9 +8,10 @@ class Callbacks extends Component {
   render() {
 
     const cardContainer = {
+      //backgroundColor: this.props.styles.primary3,
       width: "auto",
       height: "auto",
-      margin: 5,
+      margin: 5
     }
 
     return (

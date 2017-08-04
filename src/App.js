@@ -1,18 +1,17 @@
 import React, { Component } from 'react';
+import {BrowserRouter as Router, Route} from 'react-router-dom';
 import * as firebase from 'firebase';
 // Material-UI imports
+import getMuiTheme from 'material-ui/styles/getMuiTheme';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
+import {blueGrey700, blueGrey800, blue800} from 'material-ui/styles/colors';
 import injectTapEventPlugin from 'react-tap-event-plugin';
-import {GridList, GridTile} from 'material-ui/GridList';
-import AppBar from 'material-ui/AppBar';
-import FlatButton from 'material-ui/FlatButton';
 
-import UserPanel from './components/user-panel/user-panel';
-import TeamPanel from './components/team-panel/team-panel';
-import Tasks from './components/tasks/tasks';
-import Callbacks from './components/callbacks/callbacks';
-import Chats from './components/chats/chats';
+import NavBar from './components/navBar/navBar';
+import Home from './components/home/home';
 import LoginPage from './components/login/login-page';
+import AdminPanel from './components/adminPanel/adminPanel';
+import MobileView from './mobile/mobileView';
 import './App.css';
 injectTapEventPlugin();
 
@@ -21,76 +20,107 @@ class App extends Component {
   constructor() {
     super();
     this.state = {
-      loggedIn: null,
+      // user's details
+      isLoggedIn: null,
       email: null,
-      userName: null
+      userName: null,
+      userId: null,
+      // global style theme
+      styles: {
+        primary1: '#455A64',
+        primary2: '#CFD8DC',
+        primary3: '#90A4AE',
+        cardTitleBg: blueGrey800,
+        chip: '#90A4AE'
+      },
+      // list of agents. will be updated from Firebase upon Component Will Mount
+      agents: []
     }
   }
 
+  componentWillMount() {
+    //findAllAgents and save as an array
+    const agentsRef = firebase.database().ref().child('agents');
+    let agents = []
+    agentsRef.on('value', snap => {
+      for(let agent in snap.val()) {
+        agents.push(snap.val()[agent])
+        //console.log(snap.val()[agent].name)
+      }
+      this.setState({
+        agents: agents
+      })
+    })
+  }
+
+  // log user in upon sign in - gets update from the "Login" component
   logUserIn(email) {
     this.setState({
-      loggedIn: true,
+      isLoggedIn: true,
       email: email,
       userName: email.slice(0, email.search('@'))
     })
   }
 
+  // change isLoggedIn state value to 'false' - gets update from the "NavBar" component
   logUserOut() {
-    firebase.auth().signOut();
+    //firebase.auth().signOut();
     this.setState({
-      loggedIn: false
+      isLoggedIn: false
     })
   }
 
+  render() { 
 
-  render() {
-
-    const appBar = {
-      textAlign: "center"
-    }
-    if(this.state.loggedIn) {
-      return (
-        <MuiThemeProvider>
-          <div className="App">
-
-            <AppBar
-              title="HASOFFERS SUPPORT DASH"
-              showMenuIconButton={false}
-              style={appBar}
-              iconElementRight={<FlatButton label="Log Out" onClick={this.logUserOut.bind(this)} />}
-            />
-                
-              <div className="container">
-                <GridList
-                  cellHeight={'auto'}
-                  cols={7}
-                  padding={10}>
-
-                  <GridTile cols={2}>
-                    <UserPanel email={this.state.email} userName={this.state.userName} />
-                    <Callbacks />
-                  </GridTile>
-                  <GridTile cols={3} rows={1}>
-                    <Tasks />
-                  </GridTile>
-                  <GridTile cols={2} rows={2}>
-                    <Chats />
-                    <TeamPanel />
-                  </GridTile>
-                </GridList>
+    // set Material UI
+    const muiTheme = getMuiTheme({
+      palette: {
+        primary1Color: blueGrey700,
+        accent1Color: blue800
+      }
+    });
+    // media query
+    let mq = matchMedia( "(min-width: 600px)" )
+    // media query => for desktop show this:
+    if(mq.matches === true) {
+      if(this.state.isLoggedIn) {
+        return (
+          <MuiThemeProvider muiTheme={muiTheme}>
+            <Router>
+              <div>
+                <Route path='/' component={() => (<NavBar logUserOut={this.logUserOut.bind(this)} />)} />
+                <Route exact path='/' component={() => (<Home agents={this.state.agents} styles={this.state.styles} user={{userName:this.state.userName, email:this.state.email}} />)} />
+                <Route path='/admin' component={() => (<AdminPanel user={{userName:this.state.userName, email:this.state.email}} agents={this.state.agents}/>)} />
+              </div>                 
+            </Router>
+          </MuiThemeProvider>
+        );
+      } else {
+        return (
+          <MuiThemeProvider>
+            <div className="App">
+              <LoginPage logUserIn={this.logUserIn.bind(this)}/>
+            </div>
+          </MuiThemeProvider>
+        )
+      }
+    // media query => for smaller screens show this:
+    } else if (mq.matches === false){
+        if(this.state.isLoggedIn) {
+          return (
+            <MuiThemeProvider muiTheme={muiTheme}>
+              <MobileView mq={mq}/>
+            </MuiThemeProvider>
+          )
+        } else {
+          return (
+            <MuiThemeProvider muiTheme={muiTheme}>
+              <div className="App">
+                <LoginPage logUserIn={this.logUserIn.bind(this)}/>
               </div>
-                
-          </div>
-        </MuiThemeProvider>
-      );
-    } else {
-      return (
-        <MuiThemeProvider>
-          <div className="App">
-            <LoginPage logUserIn={this.logUserIn.bind(this)}/>
-          </div>
-        </MuiThemeProvider>
-      )
+            </MuiThemeProvider>
+          )
+      }
     }
   }
 }

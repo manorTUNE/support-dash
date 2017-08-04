@@ -14,6 +14,7 @@ class Chats extends Component {
   render() {
 
     const cardContainer = {
+      //backgroundColor: this.props.styles.primary3,
       width: "auto",
       height: "auto",
       margin: 5
@@ -52,7 +53,7 @@ class Chats extends Component {
                 <TableRowColumn>Esther</TableRowColumn>
               </TableRow>
             </TableBody>
-          </Table>
+          </Table>    
         </CardText>
       </Card>
     );

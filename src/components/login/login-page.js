@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import './login-page.css';
 import * as firebase from 'firebase';
 import Dialog from 'material-ui/Dialog';
-import RaisedButton from 'material-ui/RaisedButton';
 import FlatButton from 'material-ui/FlatButton';
 import TextField from 'material-ui/TextField';
 
@@ -14,6 +13,7 @@ class LoginPage extends Component {
     this.state = {
       open: true
     }
+    // Firebase function that listens to user login status changes
     firebase.auth().onAuthStateChanged(firebaseUser => {
     if(firebaseUser) {
       console.log('currently logged in as: ' + firebaseUser.email)
@@ -24,8 +24,6 @@ class LoginPage extends Component {
   })
   }
 
-  componentWillMount() {}
-
   handleOpen = () => {
     this.setState({open: true});
   };
@@ -34,21 +32,23 @@ class LoginPage extends Component {
     this.setState({open: false});
   };
 
-  login(e) {
+  login() {
+    // get email and password from login form
     let email = this.refs.email.input.value;
     let password = this.refs.password.input.value;
+    // set Firebase and sign user in 
     const auth = firebase.auth();
     const promise = auth.signInWithEmailAndPassword(email, password);
     promise.catch(e => {
       console.log(e.message)
     })
+    // if login is successful, then "onAuthStateChanged" will trigger (in the constructor)
   };
   signUp(e) {
+    // get email and password from login form
     let email = this.refs.email.input.value;
     let password = this.refs.password.input.value;
-    if(email.length < 5 || password.length < 5) {
-      alert('Email or password are invalid')
-    }
+    // set Firebase and create new user
     const auth = firebase.auth();
     const promise = auth.createUserWithEmailAndPassword(email, password);
     promise
@@ -80,9 +80,6 @@ class LoginPage extends Component {
       />
     ];
     const loginDialog = {
-    }
-    const loginButton = {
-      display: 'block'
     }
 
     const dialogTitleStyle = {
